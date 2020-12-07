@@ -96,8 +96,8 @@ namespace StringCalculate
         /// </summary>
         private static readonly List<Regex> _regexList = new List<Regex>
         {
-            new Regex(@"\s*[-+*/()\\^!%:]\s*", RegexOptions.Compiled), 
-            new Regex(@"([+*/(|\\^:]|^)\s*(?:(?:-)\s*([A-Za-z0-9(.]))", RegexOptions.Compiled)
+            new Regex(@"\s*[-+*/\\^:!%()]\s*", RegexOptions.Compiled), 
+            new Regex(@"([-+*/\\^:(]|^)\s*(?:(?:-)\s*([A-Za-z0-9(.]))", RegexOptions.Compiled)
         };
 
         private static MatchEvaluator _evaluator;
@@ -202,7 +202,7 @@ namespace StringCalculate
             return isError == true ? "" : outputExpression.ToString();
         }
  
-        public static string[] ConvertToPostfixNotationInArray(string expression, out bool isError)
+        public static string[] ConvertToPostfixNotationArray(string expression, out bool isError)
         {
             string resultExpression = ConvertToPostfixNotation(expression, out isError);
             if (!isError)
@@ -220,7 +220,7 @@ namespace StringCalculate
         /// <param name="expression">Математическое выражение в виде массива токенов в постфиксной форме</param>
         /// <param name="isError">Флаг ошибки</param>
         /// <returns></returns>
-        private static double CalcExpFromPostfixNotation(string[] expression, out bool isError)
+        private static double CalculationExpression(string[] expression, out bool isError)
         {
             Stack<string> stack = new Stack<string>(); 
             isError = false;
@@ -268,7 +268,10 @@ namespace StringCalculate
                 else
                     stack.Push(result.ToString());
             }
-            return isError == false ? (stack.Count == 0 ? 0 : double.Parse(stack.Pop())) : 0;
+            if (stack.Count != 1) 
+                isError = true;
+
+            return isError == false ? double.Parse(stack.Pop()) : 0;
         }
 
         /// <summary>
@@ -279,9 +282,9 @@ namespace StringCalculate
         /// <returns></returns>
         public static double CalcalateExpression(string expression, out bool isError)
         {
-            string[] resConvertToPosfixForm = ConvertToPostfixNotationInArray(expression, out isError);
+            string[] resConvertToPosfixForm = ConvertToPostfixNotationArray(expression, out isError);
             if (isError) return 0;
-            double result = CalcExpFromPostfixNotation(resConvertToPosfixForm, out isError);
+            double result = CalculationExpression(resConvertToPosfixForm, out isError);
             return isError ? 0 : result;
         }
 

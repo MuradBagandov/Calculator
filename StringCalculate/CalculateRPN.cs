@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -96,10 +97,12 @@ namespace StringCalculate
         private static readonly List<Regex> _regexList = new List<Regex>
         {
             new Regex(@"\s*[-+*/()\\^!%:]\s*", RegexOptions.Compiled), 
-            new Regex(@"([+*/(|\\^:]|^)\s*(?:(?:-)\s*([A-Za-z0-9(,]))", RegexOptions.Compiled)
+            new Regex(@"([+*/(|\\^:]|^)\s*(?:(?:-)\s*([A-Za-z0-9(.]))", RegexOptions.Compiled)
         };
 
         private static MatchEvaluator _evaluator;
+
+        private readonly static CultureInfo _culture = new CultureInfo("en-US");
 
         /*--------------------------------------------------------------------------------------------------------------------*/
         /// <summary>
@@ -134,7 +137,7 @@ namespace StringCalculate
 
             foreach (string selectToken in expressionArray)
             {
-                if (double.TryParse(selectToken, out double t) || PostfixFunctions.ContainsKey(selectToken))
+                if (double.TryParse(selectToken, NumberStyles.Float, _culture, out double t) || PostfixFunctions.ContainsKey(selectToken))
                 {
                     outputExpression.Append($"{selectToken} ");
                 }   
@@ -226,7 +229,7 @@ namespace StringCalculate
             {
                 if (isError) 
                     break;
-                if (double.TryParse(token, out double t))
+                if (double.TryParse(token, NumberStyles.Float, _culture, out double t))
                 {
                     result = t;
                 }

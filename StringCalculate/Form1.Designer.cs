@@ -33,12 +33,12 @@
             this.tbResult = new System.Windows.Forms.TextBox();
             this.PanelTitle = new System.Windows.Forms.Panel();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.поверхВсехОконToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.закрытьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PanelTBWindow = new System.Windows.Forms.Panel();
             this.tbExpression = new System.Windows.Forms.TextBox();
             this.pnBtnFuncPanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
-            this.поверхВсехОконToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.PanelTBWindow.SuspendLayout();
             this.pnBtnFuncPanel.SuspendLayout();
@@ -80,14 +80,23 @@
             this.закрытьToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(165, 48);
+            // 
+            // поверхВсехОконToolStripMenuItem
+            // 
+            this.поверхВсехОконToolStripMenuItem.ForeColor = System.Drawing.Color.White;
+            this.поверхВсехОконToolStripMenuItem.Name = "поверхВсехОконToolStripMenuItem";
+            this.поверхВсехОконToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.поверхВсехОконToolStripMenuItem.Text = "Поверх всех окон";
+            this.поверхВсехОконToolStripMenuItem.CheckedChanged += new System.EventHandler(this.поверхВсехОконToolStripMenuItem_CheckedChanged);
+            this.поверхВсехОконToolStripMenuItem.Click += new System.EventHandler(this.поверхВсехОконToolStripMenuItem_Click);
             // 
             // закрытьToolStripMenuItem
             // 
             this.закрытьToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.закрытьToolStripMenuItem.ForeColor = System.Drawing.Color.White;
             this.закрытьToolStripMenuItem.Name = "закрытьToolStripMenuItem";
-            this.закрытьToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.закрытьToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.закрытьToolStripMenuItem.Text = "Закрыть";
             this.закрытьToolStripMenuItem.Click += new System.EventHandler(this.закрытьToolStripMenuItem_Click);
             // 
@@ -144,15 +153,6 @@
             this.button1.Text = "Sin";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Visible = false;
-            // 
-            // поверхВсехОконToolStripMenuItem
-            // 
-            this.поверхВсехОконToolStripMenuItem.ForeColor = System.Drawing.Color.White;
-            this.поверхВсехОконToolStripMenuItem.Name = "поверхВсехОконToolStripMenuItem";
-            this.поверхВсехОконToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.поверхВсехОконToolStripMenuItem.Text = "Поверх всех окон";
-            this.поверхВсехОконToolStripMenuItem.CheckedChanged += new System.EventHandler(this.поверхВсехОконToolStripMenuItem_CheckedChanged);
-            this.поверхВсехОконToolStripMenuItem.Click += new System.EventHandler(this.поверхВсехОконToolStripMenuItem_Click);
             // 
             // Form1
             // 

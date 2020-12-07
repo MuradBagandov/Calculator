@@ -50,7 +50,8 @@ namespace StringCalculate
             { "round", (v)=>Math.Round(v)},
             { "ceiling", (v)=>Math.Ceiling(v)},
             { "floor", (v)=>Math.Floor(v)},
-            { "fract", (v)=>v-Math.Truncate(v)}
+            { "fract", (v)=>v-Math.Truncate(v)},
+            { "inv", (v)=>-v}
         };
 
         /// <summary>
@@ -95,10 +96,7 @@ namespace StringCalculate
         private static readonly List<Regex> _regexList = new List<Regex>
         {
             new Regex(@"\s*[-+*/()\\^!%:]\s*", RegexOptions.Compiled), 
-            new Regex(@"([-+*/(|\\^:])\s*(-\s*\w*\s*\(+.*\)+)\s?", RegexOptions.Compiled),
-            new Regex(@"([-+*/(|\\^:])\s*(-\s*[A-Za-z0-9\.,]+)\s?", RegexOptions.Compiled),
-            new Regex(@"^\s*(-\s*\w*\s*\(+.*\)+)\s?", RegexOptions.Compiled),
-            new Regex(@"^\s*(-\s*[A-Za-z0-9\.,]+)\s?", RegexOptions.Compiled)
+            new Regex(@"([+*/(|\\^:]|^)\s*(?:(?:-)\s*([A-Za-z0-9(,]))", RegexOptions.Compiled)
         };
 
         private static MatchEvaluator _evaluator;
@@ -111,17 +109,11 @@ namespace StringCalculate
         /// <returns></returns>
         private static string[] ConvertMathExpressionToArray(string expression)
         {
-            for (int i = 0; i < _regexList.Count; i++)
-            {
-                if (i == 0)
-                    _evaluator = new MatchEvaluator((m) => $" { m.Value} ");
-                else if (i == 1 || i == 2)
-                    _evaluator = new MatchEvaluator((m) => $" { m.Groups[1].Value} ( 0 { m.Groups[2].Value} ) ");
-                else if (i == 3 || i == 4)
-                    _evaluator = new MatchEvaluator((m) => $"( 0 { m.Groups[1].Value} ) ");
+            _evaluator = new MatchEvaluator((m) => $" { m.Value} ");
+            expression = _regexList[0].Replace(expression, _evaluator);
+            _evaluator = new MatchEvaluator((m) => $"{ m.Groups[1].Value} inv { m.Groups[2].Value}");
+            expression = _regexList[1].Replace(expression, _evaluator);
 
-                expression = _regexList[i].Replace(expression, _evaluator);
-            }
             return expression.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
 

@@ -8,14 +8,21 @@ using System.Threading.Tasks;
 
 namespace StringCalculate
 {
+    public enum AssociativityEnum
+    {
+        Left,Right
+    }
+
     public struct Operator
     {
         public byte Priority;
+        public AssociativityEnum Associativity;
         public Func <double,double,double> Execute;
         
-        public Operator(Func<double, double, double> execute, byte priority)
+        public Operator(Func<double, double, double> execute, byte priority, AssociativityEnum associativity = AssociativityEnum.Left)
         {
-            Priority = priority;
+            Priority = priority; 
+            Associativity = associativity;
             Execute = execute;
         }
     }
@@ -52,7 +59,12 @@ namespace StringCalculate
             { "ceiling", (v)=>Math.Ceiling(v)},
             { "floor", (v)=>Math.Floor(v)},
             { "fract", (v)=>v-Math.Truncate(v)},
-            { "inv", (v)=>-v}
+            { "inv", (v)=>-v},
+            { "fact", (v)=>
+            {   if (!long.TryParse(v.ToString(), out long l))
+                    throw new ArgumentException();
+                return Factorial((long)v);
+            }}
         };
 
         /// <summary>
@@ -82,13 +94,13 @@ namespace StringCalculate
         /// </summary>
         public static Dictionary<string, Operator> Operations = new Dictionary<string, Operator>()
         {
-            {"+", new Operator((a,b)=>a+b, 1)},
-            {"-", new Operator((a,b)=>a-b, 1)},
+            {"+", new Operator((a,b)=>a+b, 3)},
+            {"-", new Operator((a,b)=>a-b, 3)},
             {"*", new Operator((a,b)=>a*b, 2)},
             {"/", new Operator((a,b)=>a/b, 2)},
             {"\\", new Operator((a,b)=>Math.Floor(a / b), 2)},
-            {":", new Operator((a,b)=>a%b, 3)},
-            {"^", new Operator((a,b)=>Math.Pow(a,b), 3)}
+            {":", new Operator((a,b)=>a%b, 1)},
+            {"^", new Operator((a,b)=>Math.Pow(a,b), 1)}
         };
 
         /// <summary>
@@ -143,27 +155,31 @@ namespace StringCalculate
                 }   
                 else if (MathConsts.ContainsKey(selectToken))
                 {
-                    outputExpression.Append($"{MathConsts[selectToken]} ");
+                    outputExpression.Append($"{MathConsts[selectToken].ToString(_culture)} ");
                 }
                 else if (Operations.ContainsKey(selectToken))
                 {
-                    byte priorityValueOfStack;
+                    byte priorityValueOfStack = 255;
+                    byte priorityValueOfSelectToken = Operations[selectToken].Priority;
+
+                    AssociativityEnum associativityValueSelectToken = Operations[selectToken].Associativity;
 
                     while (stack.Count>0)
                     {
                         valueOfStack = stack.Peek();
-                        if (Operations.ContainsKey(valueOfStack))
-                            priorityValueOfStack = Operations[valueOfStack].Priority;
+                        if (Operations.TryGetValue(valueOfStack, out Operator operation))
+                            priorityValueOfStack = operation.Priority;
                         else if (PrefixFunctions.ContainsKey(valueOfStack))
-                            priorityValueOfStack = 4;
-                        else priorityValueOfStack = 255;
+                            priorityValueOfStack = 0;
 
-                        if (priorityValueOfStack < Operations[selectToken].Priority || priorityValueOfStack == 255)
-                            break;
-                        else
+                        if (priorityValueOfStack <= priorityValueOfSelectToken && associativityValueSelectToken != AssociativityEnum.Right)
                         {
                             valueOfStack = stack.Pop();
                             outputExpression.Append($"{valueOfStack} ");
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                     stack.Push(selectToken);
@@ -224,7 +240,7 @@ namespace StringCalculate
         {
             Stack<string> stack = new Stack<string>(); 
             isError = false;
-            double result=0, a, b;
+            double result = default, a, b;
             foreach (string token in expression)
             {
                 if (isError) 
